@@ -1,0 +1,325 @@
+@import "variable-overrides";
+@import "../../../../node_modules/bootswatch/cosmo/variables";
+@import "../../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "../../../../node_modules/bootswatch/cosmo/bootswatch";
+@import '../../../../node_modules/font-awesome/scss/font-awesome';
+
+/**
+ * Frontend Styles Start Here
+ */
+
+/* enable absolute positioning */
+.inner-addon {
+    position: relative;
+}
+
+/* style icon */
+.inner-addon .fa,
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+}
+
+/* align icon */
+.left-addon .fa,
+.left-addon .glyphicon  { left:  0px;}
+.right-addon .fa,
+.right-addon .glyphicon { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
+
+/*
+	ref: http://bootsnipp.com/snippets/featured/event-list
+ */
+.event-list {
+	list-style: none;
+	font-family: 'Lato', sans-serif;
+	margin: 0px;
+	padding: 0px;
+}
+
+.event-list > li,
+.event-list > .event {
+	background-color: rgb(255, 255, 255);
+	box-shadow: 0px 0px 5px rgb(51, 51, 51);
+	box-shadow: 0px 0px 5px rgba(51, 51, 51, 0.7);
+	padding: 0px;
+	margin: 0px 0px 20px;
+}
+
+.event-list > .event {
+	margin: 4px;
+	padding: 4px;
+}
+
+.event-list > li > time,
+.event-list > .event > time {
+	display: inline-block;
+	width: 100%;
+	color: rgb(255, 255, 255);
+	background-color: rgb(197, 44, 102);
+	padding: 5px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.event-list > li:nth-child(even) > time,
+.event-list > .event:nth-child(even) > time {
+	background-color: rgb(165, 82, 167);
+}
+.event-list > li > time > span {
+	display: none;
+}
+.event-list > li > time > .day,
+.event-list > .event > time > .day {
+	display: block;
+	font-size: 56pt;
+	font-weight: 100;
+	line-height: 1;
+}
+.event-list > li time > .month,
+.event-list > .event time > .month {
+	display: block;
+	font-size: 24pt;
+	font-weight: 900;
+	line-height: 1;
+}
+.event-list > li > img,
+.event-list > .event > img,
+.event-list > li > i.fa,
+.event-list > .event > i.fa {
+	width: 100%;
+}
+.event-list > li > .info,
+.event-list > .event > .info {
+	padding-top: 5px;
+	text-align: center;
+}
+.event-list > li > .info > .what,
+.event-list > .event > .info > .what {
+	font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	line-height: 1.4;
+	color: #222222;
+	font-size: 17pt;
+	font-weight: 700;
+	margin: 0px;
+}
+.event-list > li > .info > .why,
+.event-list > .event > .info > .why {
+	font-size: 13pt;
+	font-weight: 300;
+	margin: 0px;
+}
+.event-list > li > .info > ul,
+.event-list > .event > .info > ul,
+.event-list > li > .social > ul,
+.event-list > .event > .social > ul {
+	display: table;
+	list-style: none;
+	margin: 10px 0px 0px;
+	padding: 0px;
+	width: 100%;
+	text-align: center;
+}
+.event-list > li > .social > ul,
+.event-list > .event > .social > ul {
+	margin: 0px;
+}
+.event-list > li > .info > ul > li,
+.event-list > .event > .info > ul > li,
+.event-list > li > .social > ul > li,
+.event-list > .event > .social > ul > li {
+	display: table-cell;
+	cursor: pointer;
+	color: rgb(30, 30, 30);
+	font-size: 11pt;
+	font-weight: 300;
+    padding: 3px 0px;
+}
+.event-list > li > .info > ul > li > a,
+.event-list > .event > .info > ul > li > a {
+	display: block;
+	width: 100%;
+	color: rgb(30, 30, 30);
+	text-decoration: none;
+}
+.event-list > li > .social > ul > li,
+.event-list > .event > .social > ul > li {
+    padding: 0px;
+}
+.event-list > li > .social > ul > li > a,
+.event-list > .event > .social > ul > li > a {
+    padding: 3px 0px;
+}
+.event-list > li > .info > ul > li:hover,
+.event-list > .event > .info > ul > li:hover,
+.event-list > li > .social > ul > li:hover,
+.event-list > .event > .social > ul > li:hover {
+	color: rgb(30, 30, 30);
+	background-color: rgb(200, 200, 200);
+}
+.facebook a,
+.twitter a,
+.google-plus a {
+	display: block;
+	width: 100%;
+	color: rgb(75, 110, 168) !important;
+}
+.twitter a {
+	color: rgb(79, 213, 248) !important;
+}
+.google-plus a {
+	color: rgb(221, 75, 57) !important;
+}
+.facebook:hover a {
+	color: rgb(255, 255, 255) !important;
+	background-color: rgb(75, 110, 168) !important;
+}
+.twitter:hover a {
+	color: rgb(255, 255, 255) !important;
+	background-color: rgb(79, 213, 248) !important;
+}
+.google-plus:hover a {
+	color: rgb(255, 255, 255) !important;
+	background-color: rgb(221, 75, 57) !important;
+}
+
+@media (min-width: 768px) {
+	.event-list > li {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 120px;
+		padding: 0px;
+	}
+	.event-list > li > time,
+	.event-list > li > img  {
+		display: inline-block;
+	}
+	.event-list > li > time,
+	.event-list > li > img {
+		width: 120px;
+		float: left;
+	}
+	.event-list > li > .info {
+		background-color: rgb(245, 245, 245);
+		overflow: hidden;
+	}
+	.event-list > li > time,
+	.event-list > li > img {
+		width: 120px;
+		height: 120px;
+		padding: 0px;
+		margin: 0px;
+	}
+	.event-list > li > .info {
+		position: relative;
+		height: 120px;
+		text-align: left;
+		padding-right: 40px;
+	}
+	.event-list > li > .info > .when,
+	.event-list > li > .info > .what,
+	.event-list > li > .info > .why,
+	.event-list > li > .info > .where {
+		padding: 0px 10px;
+	}
+	.event-list > li > .info > ul {
+		position: absolute;
+		left: 0px;
+		bottom: 0px;
+	}
+	.event-list > li > .social {
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		display: block;
+		width: 40px;
+	}
+    .event-list > li > .social > ul {
+        border-left: 1px solid rgb(230, 230, 230);
+    }
+	.event-list > li > .social > ul > li {
+		display: block;
+        padding: 0px;
+	}
+	.event-list > li > .social > ul > li > a {
+		display: block;
+		width: 40px;
+		padding: 10px 0px 9px;
+	}
+}
+
+.list-r-5 {
+  margin-right: 5px; }
+
+.table > thead > tr > th.vert-align,
+.table > tr > th.vert-align,
+.table > tbody > tr > th.vert-align {
+    vertical-align: middle;
+}
+
+@-moz-document url-prefix() {
+  fieldset { display: table-cell; }
+}
+
+
+.site-footer {
+	margin-top: 20px;
+  padding: 40px 0;
+  color: #999;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-top: 1px solid #e5e5e5;
+}
+.site-footer p:last-child {
+  margin-bottom: 0;
+}
+
+.margin-r-5 { margin-right: 5px; }
+.margin-b20 { margin-bottom: 20px }
+.margin-b12 { margin-bottom: 12px }
+.margin-b8 { margin-bottom: 8px }
+.text-normal { font-size: 15px; }
+
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+/* Carousel base class */
+.carousel {
+  height: 500px;
+  margin-bottom: 60px;
+}
+/* Since positioning the image, we need to help out the caption */
+.carousel-caption {
+  z-index: 10;
+}
+
+/* Declare heights because of positioning of img element */
+.carousel .item {
+  height: 500px;
+  background-color: #777;
+}
+.carousel-inner > .item > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  height: 500px;
+}
+
+.jumbotron > h1 {
+    z-index: 10;
+}
+
+.jumbotron > img{
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  height: 500px;
+}
+

@@ -1,0 +1,61 @@
+<?php
+
+namespace {{namespace}};
+
+/**
+ * Interface {{class}}
+ * @package {{namespace}}
+ */
+interface {{class}}
+{
+
+{{all}}    /**
+     * Get all instance of {{model}}.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection|\{{model}}[]
+     */
+    public function all();
+{{/all}}
+{{paginated}}   /**
+     * @param  $per_page
+     * @param  string      $order_by
+     * @param  string      $sort
+     * @return mixed
+     */
+    public function get{{model}}sPaginated($per_page = 10, $order_by = 'id', $sort = 'asc');
+{{/paginated}}
+{{find}}    /**
+     * Find an instance of {{model}} with the given ID.
+     *
+     * @param  $id
+     * @return mixed
+     */
+    public function findOrThrowException($id);
+{{/find}}
+{{create}}    /**
+     * Create a new instance of {{model}}.
+     *
+     * @param $input
+     * @return mixed
+     */
+    public function create($input);
+{{/create}}
+{{update}}    /**
+     * Update the {{model}} with the given input.
+     *
+     * @param  int    $id
+     * @param  array  $input
+     * @return bool|int
+     */
+    public function update($id, $input);
+{{/update}}
+{{delete}}    /**
+     * Delete an entry with the given ID.
+     *
+     * @param  int  $id
+     * @return bool|null
+     * @throws \Exception
+     */
+    public function delete($id);
+{{/delete}}
+}
