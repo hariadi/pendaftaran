@@ -98,7 +98,11 @@ class EventRepository extends BaseRepository
 
     public function show($idOrSlug, $request)
     {
-        $event = $this->model->whereId($idOrSlug)->firstOrFail();
+    	if (!$e = $this->model->whereSlug($idOrSlug)) {
+    		$e = $this->model->whereId($idOrSlug);
+    	}
+
+    	$event = $e->firstOrFail();
 
         $input = $request->only(['term']);
 
