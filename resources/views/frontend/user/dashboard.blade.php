@@ -68,6 +68,13 @@
       	<div class="box box-success">
 	        <div class="box-header with-border">
 	            <h3 class="box-title">Senarai Aktiviti / Program</h3>
+
+	            @if (request()->has('by'))
+	            	<a href="{{ route('frontend.user.dashboard') }}" role="button" class="btn btn-primary">Papar aktiviti saya sahaja</a>
+	            @else
+	            	<a href="{{ route('frontend.user.dashboard', ['by' => 'all']) }}" role="button" class="btn btn-primary">Papar semua aktiviti</a>
+	            @endif
+
 	            <div class="box-tools pull-right">
 	                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
 	            </div><!-- /.box tools -->

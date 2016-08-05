@@ -30,8 +30,11 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
     	$user = access()->user();
-    	$input = $request->only(['term', 'cat', 'when', 'view']);
-    	$input['by'] = $user->id;
+    	$input = $request->only(['by', 'term', 'cat', 'when', 'view', 'status']);
+
+    	if ($input['by'] != 'all') {
+    		$input['by'] = $user->id;
+    	}
 
     	$builder = $this->events->search($input);
     	$events = $builder->paginate();

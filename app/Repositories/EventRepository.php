@@ -82,7 +82,9 @@ class EventRepository extends BaseRepository
         }
 
         if ($by = $input['by']) {
-            $builder->whereUserId($by);
+        	if ($by != 'all') {
+        		$builder->whereUserId($by);
+        	}
         }
 
         if ($input['when'] && in_array($input['when'], $this->model->whens)) {
