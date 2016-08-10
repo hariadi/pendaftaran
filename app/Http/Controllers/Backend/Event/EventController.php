@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\Category\Category;
 use App\Http\Controllers\Controller;
 use App\Repositories\EventRepository;
+use App\Models\Participant\Participant;
 use App\Repositories\CategoryRepository;
 use App\Http\Requests\Backend\Event\StoreEventRequest;
 use App\Http\Requests\Backend\Event\UpdateEventRequest;
+use App\Http\Requests\Backend\Event\DetachParticipantEventRequest;
 
 class EventController extends Controller
 {
@@ -136,5 +138,18 @@ class EventController extends Controller
         $event->delete();
 
         return redirect()->route('frontend.user.dashboard')->withFlashSuccess('Program berjaya dihapus.');
+    }
+
+    /**
+     * Detach participant that accosiate with event
+     *
+     * @param  App\Event  $event
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyParticipant(Event $event, Participant $participant, DetachParticipantEventRequest $request)
+    {
+        $event->participants()->detach($participant);
+
+        return redirect()->route('admin.event.show', $event->id)->withFlashSuccess('Peserta telah dikeluarkan dari senarai kehadiran.');
     }
 }

@@ -32,6 +32,11 @@ trait EventAttribute
         }
     }
 
+    public function getTokenUrlAttribute()
+    {
+    	return url('e') . '/' . $this->token;
+    }
+
     public function getPhotoAttribute($photo)
     {
         return $photo ? asset('img/events/' . $photo) : null;

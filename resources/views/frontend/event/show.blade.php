@@ -29,17 +29,33 @@
 			<div class="col-md-12">
 				<p>
 
-					<a href="#collapseInfo" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseInfo" class="btn btn-success"><i class="fa fa-info-circle"></i> Papar Info Program</a>
+				<div class="row">
+					<div class="col-md-6">
+						<a href="#collapseInfo" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseInfo" class="btn btn-success"><i class="fa fa-info-circle"></i> Papar Info Program</a>
 
-					@if (!$event->isPast())
+						@if (!$event->isPast())
 
-					<a href="{{ route('event.add.participants', $event->id) }}" class="btn btn-primary"><i class="fa fa-user-plus"></i> Tambah Peserta</a>
+						<a href="{{ route('event.add.participants', $event->id) }}" class="btn btn-primary"><i class="fa fa-user-plus"></i> Tambah Peserta</a>
 
-					@else
+						@else
 
-					<a href="{{ route('admin.report.event', $event->id) }}" class="btn btn-primary"><i class="fa fa-tv"></i> Laporan</a>
+						<a href="{{ route('admin.report.event', $event->id) }}" class="btn btn-primary"><i class="fa fa-tv"></i> Laporan</a>
 
-					@endif
+						@endif
+					</div>
+					<div class="col-md-6">
+
+						<div class="input-group input-group-sm">
+
+							<input id="eventUrl" class="pull-left form-control" value="{{ $event->token_url }}" aria-label="Pautan pendaftaran peserta" readonly="" type="text">
+
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-info btn-flat btn-clip" data-clipboard-target="#eventUrl"><i class="fa fa-copy"></i> Salin</button>
+							</span>
+						</div>
+
+					</div>
+				</div>
 
 					{{-- <a data-toggle="modal" data-target="#addParticipant" href="{{ route('event.add.participants', $event->id) }}" class="btn btn-primary"><i class="fa fa-user-plus"></i> Tambah Peserta</a> --}}
 				</p>
@@ -166,9 +182,39 @@
 	{!! Html::script('plugins/datatables/jquery.dataTables.min.js') !!}
 	{!! Html::script('plugins/datatables/dataTables.bootstrap.min.js') !!}
 	@endif
+    {!! Html::script('plugins/clipboardjs/clipboard.min.js') !!}
 
     <script>
     	$(function () {
+
+    		$('.btn-clip').tooltip({
+			  trigger: 'click',
+			  placement: 'bottom'
+			});
+
+			function setTooltip(btn, message) {
+			  $(btn).tooltip('hide')
+			    .attr('data-original-title', message)
+			    .tooltip('show');
+			}
+
+			function hideTooltip(btn) {
+			  setTimeout(function() {
+			    $(btn).tooltip('hide');
+			  }, 3000);
+			}
+
+    		var clipboard = new Clipboard('.btn-clip');
+
+    		clipboard.on('success', function(e) {
+			  setTooltip(e.trigger, 'Disalin!');
+			  hideTooltip(e.trigger);
+			});
+
+			clipboard.on('error', function(e) {
+			  setTooltip(e.trigger, 'Gagal disalin!');
+			  hideTooltip(e.trigger);
+			});
 
     		$('[data-target="#addParticipant"]').on('click', function(e) {
 				$('#addParticipant').load('{{ route('admin.event.modal') }}', function () {

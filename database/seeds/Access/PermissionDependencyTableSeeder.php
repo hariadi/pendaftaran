@@ -23,10 +23,10 @@ class PermissionDependencyTableSeeder extends Seeder
             //For PostgreSQL or anything else
             DB::statement('TRUNCATE TABLE ' . config('access.permission_dependencies_table') . ' CASCADE');
         }
-        
+
         $permission1Id = DB::table('permissions')->where('name', 'view-backend')->first()->id;
         $permission2Id = DB::table('permissions')->where('name', 'view-access-management')->first()->id;
-        
+
         /**
          * View access management needs view backend
          */
@@ -39,10 +39,14 @@ class PermissionDependencyTableSeeder extends Seeder
 
         /**
          * All of the access permissions need view access management and view backend
-         * Starts at id = 3 to skip view-backend, view-access-management
+         * Starts at id > view-access-management to skip view-backend, view-access-management
          */
-        $remainingPermissionsIds = DB::table('permissions')->where('id', '>', 2)->pluck('id');
-        
+
+        // Find id for view-access-management
+        $viewAccessManagementId = DB::table('permissions')->whereName('view-access-management')->first()->id;
+
+        $remainingPermissionsIds = DB::table('permissions')->where('id', '>', $viewAccessManagementId)->pluck('id');
+
         foreach ($remainingPermissionsIds as $remainingPermissionId) {
             DB::table(config('access.permission_dependencies_table'))->insert([
                 'permission_id' => $remainingPermissionId,

@@ -100,7 +100,7 @@
 	                        <?php ++$index; ?>
 	                            <tr>
 	                                <td>{!! $event->id !!}</td>
-	                                <td>{!! $event->status_link !!} {!! $event->addparticipant_button !!}</td>
+	                                <td>{!! $event->addparticipant_button !!} {!! $event->status_link !!}</td>
 	                                <td>{!! $event->start_at->diffForHumans() !!}</td>
 	                                <td>{!! $event->end_at->diffForHumans() !!}</td>
 	                                <td>

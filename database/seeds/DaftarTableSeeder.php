@@ -22,6 +22,7 @@ class DaftarTableSeeder extends Seeder
         $this->call(ParticipantsTableSeeder::class);
         $this->call(EventParticipantPivotSeeder::class);
         $this->call(AttendancesTableSeeder::class);
+        $this->call(PermissionDaftarDependencyTableSeeder::class);
 
         if (env('DB_CONNECTION') == 'mysql') {
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');

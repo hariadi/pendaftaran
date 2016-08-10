@@ -2,6 +2,7 @@
 
 namespace App\Listeners\Frontend\Event;
 
+use App\Models\Event\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Queue\InteractsWithQueue;
@@ -32,22 +33,28 @@ class SendEmailListener
     {
         $subject = $event->event->name;
 
-        $this->mailer->send('frontend.event.emails.register', [
-            'subject' => $subject, 'event' => $event->event
-        ], function($message) use ($event) {
+        if ($event->event->options()->get('notification.owner') && $event->event->options()->get('notification.participant')) {
 
-            if ($event->user) {
-                $message->cc($event->user->email, $event->user->name);
-            }
+	        $this->mailer->send('frontend.event.emails.register', [
+	            'subject' => $subject, 'event' => $event->event
+	        ], function($message) use ($event) {
 
-            foreach ($event->participants as $participant) {
-                if (filter_var($participant->email, FILTER_VALIDATE_EMAIL )) {
-                    $message->to($participant->email, $participant->name);
-                }
-            }
+	        	if ($event->event->options()->get('notification.owner')) {
+		            if ($secretariat = $event->event->user) {
+		                $message->cc($secretariat->email, $secretariat->name);
+		            }
+	        	}
 
-            $message->subject($event->event->name);
+	            foreach ($event->participants as $participant) {
+	                if (filter_var($participant->email, FILTER_VALIDATE_EMAIL )) {
+	                    $message->to($participant->email, $participant->name);
+	                }
+	            }
 
-        });
+	            $message->subject($event->event->name);
+
+	        });
+
+    	}
     }
 }

@@ -15,16 +15,16 @@
 
 	<div class="col-xs-12">
 
-		<div class="box box-primary collapsed-box">
+		<div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">Maklumat Program <small>Pautan Daftar: <kbd>{{ url('e') . '/' . $event->token }}</kbd></small></h3>
 
         <div class="box-tools pull-right">
-			<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+			<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
 		</div><!-- /.box-tools -->
 
         </div><!-- /.box-header -->
-        <div class="box-body collapse">
+        <div class="box-body">
 
 				<strong><i class="fa fa-clock-o margin-r-5"></i> Tarikh</strong>
 
@@ -77,67 +77,59 @@
 			<div class="box-body">
               <table id="participants" class="table table-bordered table-striped">
                 <thead>
-                <tr>
-					<th {{ $event->isOngoing() || $event->isPast() ? 'rowspan=2' : '' }} class="hidden-xs vert-align">#</th>
-					<th {{ $event->isOngoing() || $event->isPast() ? 'rowspan=2' : '' }} class="vert-align">Nama</th>
-					<th {{ $event->isOngoing() || $event->isPast() ? 'rowspan=2' : '' }} class="vert-align"><abbr title="No. Kad Pengenalan">No. KP</abbr></th>
-					<th {{ $event->isOngoing() || $event->isPast() ? 'rowspan=2' : '' }} class="hidden-xs vert-align">Agensi</th>
-					<th {{ $event->isOngoing() || $event->isPast() ? 'rowspan=2' : '' }} class="hidden-xs vert-align">E-Mel</th>
-					<th {{ $event->isOngoing() || $event->isPast() ? 'rowspan=2' : '' }} class="hidden-xs vert-align">No. Telefon</th>
-					@if ($event->isOngoing())
-					<th class="text-center">Kehadiran</th>
-					@elseif ($event->isPast())
-					<th colspan="{{ count($event->getDateRanges()) }}" class="text-center">Kehadiran</th>
-					@endif
-				</tr>
-				@if ($event->isPast())
-				<tr>
-					@foreach ($event->getDateRanges() as $date)
-					<th class="text-center">{{ $date->formatLocalized('%d %b %Y') }}</th>
-					@endforeach
-				</tr>
-				@endif
-                </thead>
+					<tr>
+						<th rowspan="2" class="hidden-xs vert-align">#</th>
+						<th rowspan="2" class="hidden-xs vert-align">Hapus</th>
+						<th rowspan="2" class="vert-align">Nama</th>
+						<th rowspan="2" class="vert-align"><abbr title="No. Kad Pengenalan">No. KP</abbr></th>
+						<th rowspan="2" class="hidden-xs vert-align">Agensi</th>
+						<th rowspan="2" class="hidden-xs vert-align">E-Mel</th>
+						<th rowspan="2" class="hidden-xs vert-align">No. Telefon</th>
+						<th colspan="{{ count($event->getDateRanges()) }}" class="text-center">Kehadiran</th>
+					</tr>
+					<tr>
+						@foreach ($event->getDateRanges() as $date)
+						<th class="text-center">{{ $date->formatLocalized('%d %b %Y') }}</th>
+						@endforeach
+					</tr>
+				</thead>
                 <tbody>
-                @if (!count($event->participants))
-				<tr>
-					<td colspan="7" class="text-center">
-					<p>Tiada maklumat peserta.</p></td>
-				</tr>
-				@else
 
-				@foreach ($event->participants as $key => $participant)
-				<?php $key++ ?>
-
-				<tr>
-					<th scope="row" class="hidden-xs">{{ $key }}</th>
-					<td>
-					@if (auth()->user())
-						<a href="{{ route('admin.participant.event.edit', [
-							'participant' => $participant->id,
-							'event' => $event->id,
-						]) }}">{{ $participant->name }}</a>
-					@else
-						<a href="{{ route('event.add.participant', $event->id) }}">{{ $participant->name }}</a>
+					@if (!count($event->participants))
+					<tr>
+						<td colspan="{{ 7 + count($event->getDateRanges()) }}" class="text-center">
+						<p>Tiada maklumat peserta. <a href="{{ route('event.add.participants', $event->id) }}" class="btn btn-xs btn-success" data-toggle="tooltip" title="{{ trans('buttons.backend.event.addparticipants') }}"><i class="fa fa-user-plus"></i> Tambah Peserta?</a></p></td>
+					</tr>
 					@endif
-					</td>
-					<td>{{ $participant->ic }}</td>
-					<td class="hidden-xs"><abbr title="{{ $participant->agency->name }}">{{ $participant->agency->short }}</abbr></td>
-					<td class="hidden-xs">{{ $participant->email }}</td>
-					<td class="hidden-xs">{{ $participant->phone }}</td>
 
-					@foreach ($event->getDateRanges() as $date)
-					<td class="text-center">
+					@foreach ($event->participants as $key => $participant)
+					<?php $key++ ?>
 
-						<button class="btn {{ isAttend($attendances[$participant->id], $date) ? 'btn-success' : 'btn-warning' }} btn-sm btn-attend btn-block" data-event-id="{{ $event->id }}" data-participant-id="{{  $participant->id }}" data-attend="{{ $date->toDateTimeString() }}"><i class="fa fa-{{ isAttend($attendances[$participant->id], $date) ? 'check' : 'close' }}"></i></button>
+					<tr>
+						<th scope="row" class="hidden-xs">{{ $key }}</th>
+						<th scope="row" class="hidden-xs">
+							<a href="{{ route('admin.event.destroyParticipant', ['event' => $event->id, 'participant' => $participant->id]) }}" role="button" data-method="delete"
+							data-trans-button-cancel="{{ trans('buttons.general.cancel') }}"
+							data-trans-button-confirm="{{ trans('buttons.general.crud.delete') }}"
+							data-trans-title="{{ trans('strings.backend.general.are_you_sure') }}"
+							class="btn btn-xs btn-danger"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="{{ trans('buttons.general.crud.delete') }}"></i></a>
+						</th>
+						<td><a href="{{ route('admin.participant.edit', $participant->id) }}">{{ $participant->name }}</a></td>
+						<td class="hidden-xs">{{ $participant->ic }}</td>
+						<td class="hidden-xs"><abbr title="{{ $participant->agency->name }}">{{ $participant->agency->short }}</abbr></td>
+						<td class="hidden-xs">{{ $participant->email }}</td>
+						<td class="hidden-xs">{{ $participant->phone }}</td>
+						@foreach ($event->getDateRanges() as $date)
+						<td class="text-center">
 
-					</td>
+			    			<button class="btn {{ $participant->isAttend($date) ? 'btn-success' : 'btn-warning' }} btn-sm btn-attend btn-block" data-event-id="{{ $event->id }}" data-participant-id="{{  $participant->id }}" data-attend-at="{{ $date->toDateTimeString() }}"><i class="fa fa-{{ $participant->isAttend($date) ? 'check' : 'close' }}"></i></button>
+
+						</td>
+						@endforeach
+					</tr>
 					@endforeach
 
-				</tr>
-				@endforeach
-				@endif
-                </tbody>
+				</tbody>
               </table>
             </div>
 			<!-- /.box-body -->
@@ -212,7 +204,7 @@
 				$.post('{{ route("participant.event.attend") }}', {
 					event_id: $(this).data('event-id'),
 					participant_id: $(this).data('participant-id'),
-					attend_at: $(this).data('attend'),
+					attend_at: $(this).data('attend-at'),
 				}, function(data) {
 
 					if (data.result) {

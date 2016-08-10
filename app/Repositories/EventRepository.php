@@ -5,11 +5,14 @@ namespace App\Repositories;
 use Carbon\Carbon;
 use App\Models\Event\Event;
 use Illuminate\Http\Request;
+use App\Models\Traits\SluggableTrait;
 use App\Models\Participant\Participant;
 use Illuminate\Support\Facades\Validator;
 
 class EventRepository extends BaseRepository
 {
+	use SluggableTrait;
+
     /**
      * The Participant instance.
      *
@@ -100,11 +103,11 @@ class EventRepository extends BaseRepository
 
     public function show($idOrSlug, $request)
     {
-    	if (!$e = $this->model->whereSlug($idOrSlug)) {
-    		$e = $this->model->whereId($idOrSlug);
-    	}
+    	// if (!$e = $this->model->whereSlug($idOrSlug)) {
+    	// 	$e = $this->model->whereId($idOrSlug);
+    	// }
 
-    	$event = $e->firstOrFail();
+    	$event = $this->model->findBySlugOrIdOrFail($idOrSlug);
 
         $input = $request->only(['term']);
 

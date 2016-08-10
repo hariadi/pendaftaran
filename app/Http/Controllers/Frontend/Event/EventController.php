@@ -303,7 +303,9 @@ class EventController extends Controller
             $event->participants()->attach($attendee);
         }
 
-        event(new EventParticipantRegistered($event, $attendees));
+        if ($event->options()->get('notification.owner') && $event->options()->get('notification.participant')) {
+        	event(new EventParticipantRegistered($event, $attendees));
+        }
 
         return redirect()
             ->route('event.show', $event->id)
