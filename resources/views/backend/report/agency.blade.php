@@ -7,7 +7,7 @@
         Laporan Peserta Tidak Hadir
         @if (!$print)
 		<small class="hidden-print">
-			<a href="{{ route('admin.report.participants', ['event' => $event->id, 'action' => 'print', 'attend' => request('attend')]) }}" class="btn btn-primary btn-sm" role="button"><i class="fa fa-print"></i> Cetak</a>
+			<a href="{{ route('admin.report.agencies', ['event' => $event->id, 'action' => 'print', 'attend' => request('attend')]) }}" class="btn btn-primary btn-sm" role="button"><i class="fa fa-print"></i> Cetak</a>
 		</small>
 		@endif
     </h1>
@@ -48,7 +48,7 @@
 	<div class="row">
 		<div class="col-md-12">
 
-		@foreach ($participants as $date => $attendess)
+		@foreach ($agencies as $date => $attendess)
 			<h3>{{ $date }}</h3>
 
 			<div class="table-responsive">
@@ -56,31 +56,25 @@
 					<thead>
 						<tr>
 							<th class="hidden-xs vert-align">#</th>
-							<th class="vert-align">Nama</th>
-							<th class="vert-align"><abbr title="No. Kad Pengenalan">No. KP</abbr></th>
-							<th class="hidden-xs vert-align">Agensi</th>
-							<th class="hidden-xs vert-align">E-Mel</th>
-							<th class="hidden-xs vert-align">No. Telefon</th>
+							<th class="vert-align">Agensi</th>
+							<th class="hidden-xs vert-align">Singkatan</th>
 						</tr>
 					</thead>
 					<tbody>
 
 						@if (!count($attendess))
 						<tr>
-							<td colspan="7" class="text-center">
-							<p>Tiada maklumat peserta.</p></td>
+							<td colspan="3" class="text-center">
+							<p>Tiada maklumat agensi.</p></td>
 						</tr>
 						@endif
 
-						@foreach ($attendess as $key => $participant)
+						@foreach ($attendess as $key => $agency)
 						<?php $key++ ?>
 						<tr>
 							<th scope="row" class="hidden-xs">{{ $key }}</th>
-							<td><a href="{{ route('admin.participant.edit', $participant->id) }}">{{ $participant->name }}</a></td>
-							<td class="hidden-xs">{{ $participant->ic }}</td>
-							<td class="hidden-xs"><abbr title="{{ $participant->agency->name }}">{{ $participant->agency->short }}</abbr></td>
-							<td class="hidden-xs">{{ $participant->email }}</td>
-							<td class="hidden-xs">{{ $participant->phone }}</td>
+							<td>{{ $agency->name }}</td>
+							<td class="hidden-xs">{{ $agency->short }}</td>
 						</tr>
 
 						@endforeach

@@ -14,35 +14,35 @@ use App\Services\Excel\ParticipantListExport;
 
 class ReportController extends Controller
 {
-	protected $events;
+    protected $events;
 
-	public function __construct(EventRepository $events)
-	{
-		$this->events = $events;
-	}
+    public function __construct(EventRepository $events)
+    {
+        $this->events = $events;
+    }
 
-	/**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-    	$input = $request->only(['term']);
-    	$search = false;
+        $input = $request->only(['term']);
+        $search = false;
 
-    	$builder = Event::orderBy('end_at');
+        $builder = Event::orderBy('end_at');
 
-    	if ($term = $input['term']) {
-    		$builder->search($term);
-    		$search = true;
-    	}
+        if ($term = $input['term']) {
+            $builder->search($term);
+            $search = true;
+        }
 
-    	$this->events = $builder->paginate();
+        $this->events = $builder->paginate();
 
         return view('backend.report.index')
-        	->withEvents($this->events)
-        	->withSearch($search);
+            ->withEvents($this->events)
+            ->withSearch($search);
     }
 
     /**
@@ -53,26 +53,25 @@ class ReportController extends Controller
      */
     public function event(Event $event, Request $request)
     {
-    	$input = $request->only(['action']);
-    	$print = ($input['action'] == 'print') ? true : false;
+        $input = $request->only(['action']);
+        $print = ($input['action'] == 'print') ? true : false;
 
-    	$summaries = [];
+        $summaries = [];
 
-    	//dd($event->attendances()->whereDate('attendances.created_at', '=', Carbon::parse('03-04-2016')->toDateString())->toSql());
+        //dd($event->attendances()->whereDate('attendances.created_at', '=', Carbon::parse('03-04-2016')->toDateString())->toSql());
 
-    	foreach ($event->getDateRanges() as $date) {
-    		$attend = $event->attendances()->whereDate('attendances.created_at', '=', $date->toDateString());
+        foreach ($event->getDateRanges() as $date) {
+            $attend = $event->attendances()->whereDate('attendances.created_at', '=', $date->toDateString());
 
-    		$summaries['participant'][$date->formatLocalized('%d %b %Y')] = $attend->count();
+            $summaries['participant'][$date->formatLocalized('%d %b %Y')] = $attend->count();
 
-    		$summaries['agency'][$date->formatLocalized('%d %b %Y')] = $attend->join('participants', 'event_participant.participant_id', '=','participants.id', 'left')->groupBy('participants.agency_id')->get()->count();
-    	}
-
+            $summaries['agency'][$date->formatLocalized('%d %b %Y')] = $attend->join('participants', 'event_participant.participant_id', '=','participants.id', 'left')->groupBy('participants.agency_id')->get()->count();
+        }
 
         return view('backend.report.event')
-        	->withEvent($event)
-        	->withPrint($print)
-        	->withSummaries($summaries);
+            ->withEvent($event)
+            ->withPrint($print)
+            ->withSummaries($summaries);
     }
 
     /**
@@ -83,17 +82,29 @@ class ReportController extends Controller
      */
     public function participants(Event $event, Request $request)
     {
-    	// get agencies not attending event for each day
-    	$input = $request->only(['action' ,'attend']);
-    	$attend = $input['attend'] ?: 1;
-    	$print = ($input['action'] == 'print') ? true : false;
+        // get participants not attending event for each day
+        $input = $request->only(['action' ,'attend']);
+        $attend = $input['attend'] === '1' ? true : false;
+        $print = ($input['action'] == 'print') ? true : false;
+        $participants = [];
 
-    	dd($event->participants->groupBy('agency_id'));
+        foreach ($event->getDateRanges() as $date) {
+            $attendances = $event->attendances()->whereDate('attendances.created_at', '=', $date->toDateString())->with('attend')->get();
 
-    	return view('backend.report.participant')
-    		->withAttend($attend)
-        	->withEvent($event)
-        	->withPrint($print);
+            $attendees = [];
+
+            foreach ($attendances as $attendance) {
+                $attendees[] = $attendance->attend->participant;
+            }
+
+            $participants[$date->formatLocalized('%d %b %Y') . ' ' . $date->formatLocalized('%A')] = $attend ? collect($attendees) : $event->participants->diff($attendees);
+        }
+
+        return view('backend.report.participant')
+            ->withParticipants($participants)
+            ->withAttend($attend)
+            ->withEvent($event)
+            ->withPrint($print);
     }
 
     /**
@@ -104,16 +115,39 @@ class ReportController extends Controller
      */
     public function agencies(Event $event, Request $request)
     {
-    	// get agencies not attending event for each day
-    	$input = $request->only(['attend']);
+        // get agencies not attending event for each day
+        $input = $request->only(['action' ,'attend']);
+        $attend = $input['attend'] === '1' ? true : false;
+        $print = ($input['action'] == 'print') ? true : false;
+        $agencies = [];
 
-    	$summaries = [];
+        foreach ($event->getDateRanges() as $date) {
+            $attendances = $event->attendances()->whereDate('attendances.created_at', '=', $date->toDateString())->with('attend')->get();
 
-    	foreach ($event->getDateRanges() as $date) {
-    		$summaries[$date->formatLocalized('%d %b %Y')] = Agency::all();
-    	}
+            $attendees = [];
 
-    	dd($summaries);
+            foreach ($attendances as $attendance) {
+                $attendees[] = $attendance->attend->participant->agency;
+            }
+
+            $invites = [];
+
+            foreach ($event->participants as $participant) {
+                $invites[] = $participant->agency;
+            }
+
+            $invites = collect($invites);
+            $diff = $attendees;
+            $attendees = collect($attendees);
+
+            $agencies[$date->formatLocalized('%d %b %Y') . ' ' . $date->formatLocalized('%A')] = $attend ? $attendees->unique() : $invites->unique()->diff($diff);
+        }
+
+        return view('backend.report.agency')
+            ->withAgencies($agencies)
+            ->withAttend($attend)
+            ->withEvent($event)
+            ->withPrint($print);
     }
 
     /**
@@ -124,49 +158,46 @@ class ReportController extends Controller
      */
     public function cert(Event $event, Request $request)
     {
-    	$input = $request->only(['action']);
+        $input = $request->only(['action']);
 
-    	$xls = ($input['action'] == 'xls') ? true : false;
-    	$print = ($input['action'] == 'print') ? true : false;
+        $xls = ($input['action'] == 'xls') ? true : false;
+        $print = ($input['action'] == 'print') ? true : false;
 
-    	$attendances = [];
-		foreach ($event->participants as $participant) {
-			$attendances[$participant->id] = $participant->attendances()
-				->whereEventId($event->id)
-				->orderBy('attendances.created_at')
-				->get(['attendances.created_at'])
-				->lists('created_at')
-				->toArray();
-		}
+        $attendances = [];
+        foreach ($event->participants as $participant) {
+            $attendances[$participant->id] = $participant->attendances()
+                ->whereEventId($event->id)
+                ->orderBy('attendances.created_at')
+                ->get(['attendances.created_at'])
+                ->lists('created_at')
+                ->toArray();
+        }
 
-		$view = 'backend.report.cert';
+        $view = 'backend.report.cert';
 
-		if ($input['action'] == 'xls') {
+        if ($input['action'] == 'xls') {
+            $filename = 'sijil-' . $event->id;
+            $title = 'Sijil Kehadiran ' . $event->name;
 
-	    	$filename = 'sijil-' . $event->id;
-	    	$title = 'Sijil Kehadiran ' . $event->name;
+            Excel::create($filename, function($excel) use ($attendances, $event) {
 
-			Excel::create($filename, function($excel) use ($attendances, $event) {
+                $excel->sheet('Kehadiran', function($sheet) use ($attendances, $event) {
 
-				$excel->sheet('Kehadiran', function($sheet) use ($attendances, $event) {
+                    $sheet->loadView('backend.report.cert.excel')
+                        ->withAttendances($attendances)
+                        ->withEvent($event);;
 
-					$sheet->loadView('backend.report.cert.excel')
-						->withAttendances($attendances)
-						->withEvent($event);;
+                })->download('xlsx');
 
-				})->download('xlsx');
+            });
+        }
 
-			});
-		}
-
-		if ($input['action'] == 'print') {
-			$view = 'backend.report.cert.print';
-		}
+        if ($input['action'] == 'print') {
+            $view = 'backend.report.cert.print';
+        }
 
         return view($view)
-        	->withAttendances($attendances)
-        	->withEvent($event);
+            ->withAttendances($attendances)
+            ->withEvent($event);
     }
-
-
 }

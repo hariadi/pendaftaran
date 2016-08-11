@@ -31,4 +31,6 @@ class Participant extends Model
 		' Bte. ', ' bte. ',' bt ', ' bt. ', ' Bt ', ' Bt. ',
 		' a/l ', ' a/p ', ' A/L ', ' A/P ', ' b ', ' b. ',
     ];
+
+    protected $with = ['agency'];
 }

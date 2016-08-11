@@ -26,6 +26,8 @@
 			@yield('content')
 		</section><!-- /.content -->
 
+		<p><i>Sumber: Aplikasi MyDaftar - {{ url('/') }}</i></p>
+
 	</div>
 </body>
 </html>

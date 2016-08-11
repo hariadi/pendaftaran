@@ -281,6 +281,8 @@ class EventController extends Controller
 
         $inputs = $request->input();
 
+        dd($request->input(), $request->all());
+
         // Check if user entered new agency
         if (substr($inputs['agency_id'], 0, 4) == 'new:') {
             $userInputAgency = substr($inputs['agency_id'], 4);

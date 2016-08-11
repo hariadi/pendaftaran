@@ -35,8 +35,7 @@ trait EventRelationship
      */
     public function participants()
     {
-        return $this->belongsToMany(Participant::class)
-            ->with('agency');
+        return $this->belongsToMany(Participant::class);
     }
 
     /**

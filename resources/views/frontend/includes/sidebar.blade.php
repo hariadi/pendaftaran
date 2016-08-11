@@ -97,7 +97,7 @@
 
             @permission('view-report')
                 <li class="{{ Active::pattern('report*') }}">
-                    <a href="{!!url('report')!!}">
+                    <a href="{!!url('admin/report')!!}">
                     <i class="fa fa-bar-chart"></i>
                     <span>{{ trans('menus.backend.report.title') }}</span></a>
                 </li>
