@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class EventRepository extends BaseRepository
 {
-	use SluggableTrait;
+    use SluggableTrait;
 
     /**
      * The Participant instance.
@@ -85,9 +85,9 @@ class EventRepository extends BaseRepository
         }
 
         if ($by = $input['by']) {
-        	if ($by != 'all') {
-        		$builder->whereUserId($by);
-        	}
+            if ($by != 'all') {
+                $builder->whereUserId($by);
+            }
         }
 
         if ($input['when'] && in_array($input['when'], $this->model->whens)) {
@@ -103,11 +103,7 @@ class EventRepository extends BaseRepository
 
     public function show($idOrSlug, $request)
     {
-    	// if (!$e = $this->model->whereSlug($idOrSlug)) {
-    	// 	$e = $this->model->whereId($idOrSlug);
-    	// }
-
-    	$event = $this->model->findBySlugOrIdOrFail($idOrSlug);
+        $event = $this->model->findBySlugOrIdOrFail($idOrSlug);
 
         $input = $request->only(['term']);
 

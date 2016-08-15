@@ -26,8 +26,8 @@ class UpdateTotalAttendantListener
      */
     public function handle(EventParticipantRegistered $event)
     {
-        $event = $event->event;
-        $event->attendant = $event->participants->count();
-        $event->save();
+        // $e = $event->event;
+        // $e->attendant = $e->participants->count();
+        // $e->save();
     }
 }

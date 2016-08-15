@@ -240,48 +240,11 @@ class EventController extends Controller
      */
     public function storeParticipants($idOrSlug, StoreParticipantsRequest $request)
     {
-        $event = $this->events->find($idOrSlug);
-
-        $inputs = $request->input();
-
-        // Check if user entered new agency
-        if (substr($inputs['agency_id'], 0, 4) == 'new:') {
-            $userInputAgency = substr($inputs['agency_id'], 4);
-            if (!empty($userInputAgency)) {
-                $agency = Agency::firstOrCreate(['name' => $userInputAgency]);
-                $inputs['agency_id'] = $agency->id;
-            }
-        }
-        $attendees = [];
-
-        foreach ($inputs['participants'] as $participant) {
-            $participant['agency_id'] = $inputs['agency_id'];
-            $attendee = $this->participants->store($participant);
-            $attendees[] = $attendee;
-
-            // Make sure they only have unique per event
-            $event->participants()->detach($attendee);
-            $event->participants()->attach($attendee);
+        if (!$event = $this->events->token($idOrSlug)) {
+            $event = $this->events->find($idOrSlug);
         }
 
-        event(new EventParticipantRegistered($event, $attendees));
-
-        return redirect()->route('event.show', $event->id);
-    }
-
-    /**
-     * Store a newly multiple participants.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function storeParticipantsByToken($token, StoreParticipantsRequest $request)
-    {
-        $event = $this->events->token($token);
-
         $inputs = $request->input();
-
-        dd($request->input(), $request->all());
 
         // Check if user entered new agency
         if (substr($inputs['agency_id'], 0, 4) == 'new:') {
@@ -297,7 +260,6 @@ class EventController extends Controller
         foreach ($inputs['participants'] as $participant) {
             $participant['agency_id'] = $inputs['agency_id'];
             $attendee = $this->participants->store($participant);
-
             $attendees[] = $attendee;
 
             // Make sure they only have unique per event
@@ -306,12 +268,23 @@ class EventController extends Controller
         }
 
         if ($event->options()->get('notification.owner') && $event->options()->get('notification.participant')) {
-        	event(new EventParticipantRegistered($event, $attendees));
+            event(new EventParticipantRegistered($event, $attendees));
         }
+
+        // why this cause start_at reset to now()
+        //$event = $this->countAttendant($event);
 
         return redirect()
             ->route('event.show', $event->id)
             ->withFlashSuccess('Peserta berjaya didaftarkan. Satu e-mel pemakluman berkenaan program akan dihantar oleh pihak Urus Setia Program.');
+    }
+
+    private function countAttendant(Event $event)
+    {
+        $event->attendant = $event->participants->count();
+        $event->save();
+
+        return $event;
     }
 
     /**

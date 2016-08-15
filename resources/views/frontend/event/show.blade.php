@@ -33,15 +33,9 @@
 					<div class="col-md-6">
 						<a href="#collapseInfo" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseInfo" class="btn btn-success"><i class="fa fa-info-circle"></i> Papar Info Program</a>
 
-						@if (!$event->isPast())
-
 						<a href="{{ route('event.add.participants', $event->id) }}" class="btn btn-primary"><i class="fa fa-user-plus"></i> Tambah Peserta</a>
 
-						@else
-
-						<a href="{{ route('admin.report.event', $event->id) }}" class="btn btn-primary"><i class="fa fa-tv"></i> Laporan</a>
-
-						@endif
+						<a href="{{ route('admin.report.event', $event->id) }}" class="btn btn-default"><i class="fa fa-bar-chart-o"></i> Laporan</a>
 					</div>
 					<div class="col-md-6">
 

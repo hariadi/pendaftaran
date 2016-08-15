@@ -13,7 +13,7 @@ Route::group(['namespace' => 'Event'], function() {
 	Route::resource('event', 'EventController');
 
 	Route::get('e/{token}', 'EventController@addParticipantsByToken')->name('event.add.participants.token');
-	Route::post('e/{token}', 'EventController@storeParticipantsByToken');
+	Route::post('e/{token}', 'EventController@storeParticipants');
 
 	Route::get('event/{event}/participant', 'EventController@addParticipant')->name('event.add.participant');
 	Route::post('event/{event}/participant', 'EventController@storeParticipant');
