@@ -13,13 +13,13 @@ Route::group(['namespace' => 'Event'], function() {
 	Route::resource('event', 'EventController');
 
 	Route::get('e/{token}', 'EventController@addParticipantsByToken')->name('event.add.participants.token');
-	Route::post('e/{token}', 'EventController@storeParticipants');
+	Route::post('e/{token}', 'EventController@storeParticipantsByToken')->name('event.store.participants.token');
 
 	Route::get('event/{event}/participant', 'EventController@addParticipant')->name('event.add.participant');
-	Route::post('event/{event}/participant', 'EventController@storeParticipant');
+	Route::post('event/{event}/participant', 'EventController@storeParticipant')->name('event.store.participant');
 
 	Route::get('event/{event}/participants', 'EventController@addParticipants')->name('event.add.participants');
-	Route::post('event/{event}/participants', 'EventController@storeParticipants');
+	Route::post('event/{event}/participants', 'EventController@storeParticipants')->name('event.store.participants');
 });
 
 Route::group(['namespace' => 'Participant'], function() {

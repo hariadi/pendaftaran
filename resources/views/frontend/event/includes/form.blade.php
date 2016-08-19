@@ -50,6 +50,7 @@
 										<button class="btn btn-primary btn-date" type="button"><i class="fa fa-calendar"></i></button>
 									</div>
 								</div>
+								<p class="help-block">Pendaftaran dibuka awal sejam dari tarikh mula program/aktiviti</p>
 							</div>
 						</div>
 

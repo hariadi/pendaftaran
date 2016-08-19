@@ -110,19 +110,31 @@
 			    		<td class="hidden-xs"><abbr title="{{ $participant->agency->name }}">{{ $participant->agency->short }}</abbr></td>
 			    		<td class="hidden-xs">{{ $participant->email }}</td>
 			    		<td class="hidden-xs">{{ $participant->phone }}</td>
-			    		@if ($event->isOnGoing())
-			    		<td class="text-center">
 
-			    			<button class="btn {{ $participant->isAttend() ? 'btn-success' : 'btn-warning' }} btn-sm btn-attend btn-block" data-html="true" data-event-id="{{ $event->id }}" data-participant-id="{{  $participant->id }}"><i class="fa fa-{{ $participant->isAttend() ? 'check' : 'close' }}"></i></button>
-
-				    	</td>
-				    	@elseif ($event->isPast())
+				    	@if ($event->isPast())
 
 				    		@foreach ($event->getDateRanges() as $date)
 							<td class="text-center {{ $participant->isAttend($date) ? 'bg-success' : 'bg-warning' }}">
 								<i class="fa fa-{{ $participant->isAttend() ? 'check' : 'close' }}"></i>
 							</td>
 							@endforeach
+
+						@else
+
+							<td class="text-center">
+
+								@if ($event->isOnGoing())
+
+				    			<button class="btn {{ $participant->isAttend() ? 'btn-success' : 'btn-warning' }} btn-sm btn-attend btn-block" data-html="true" data-event-id="{{ $event->id }}" data-participant-id="{{  $participant->id }}"><i class="fa fa-{{ $participant->isAttend() ? 'check' : 'close' }}"></i></button>
+
+				    			@else
+
+				    			<button class="btn bt-default btn-sm btn-block"><i class="fa fa-clock-o"></i> Belum dibuka</button>
+
+
+				    			@endif
+
+					    	</td>
 
 				    	@endif
 
@@ -132,6 +144,7 @@
 		    	</tbody>
 	    	</table>
 
+			<p class="help-block"><i>Nota: Pendaftaran dibuka awal sejam dari tarikh mula program/aktiviti</i></p>
 
     	</div>
     </div>

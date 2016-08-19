@@ -238,6 +238,17 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function storeParticipantsByToken($idOrSlug, StoreParticipantsRequest $request)
+    {
+    	return $this->storeParticipants($idOrSlug, $request);
+    }
+
+    /**
+     * Store a newly multiple participants.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function storeParticipants($idOrSlug, StoreParticipantsRequest $request)
     {
         if (!$event = $this->events->token($idOrSlug)) {
