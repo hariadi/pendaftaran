@@ -19,4 +19,14 @@ class Agency extends Model
         'name',
         'short',
     ];
+
+    /**
+     * Field to search.
+     *
+     * @var array
+     */
+    protected $searchable = [
+        'name',
+        'short',
+    ];
 }

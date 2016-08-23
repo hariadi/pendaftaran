@@ -129,7 +129,13 @@ return [
         ],
 
         'agency' => [
+        	'management' => 'Pengurusan Agensi',
+        	'id' => 'ID',
+    		'name' => 'Nama',
+    		'short' => 'Singkatan',
+    		'title' => 'Pengurusan Agensi',
         	'edit' => 'Kemaskini Agensi',
+        	'create' => 'Agensi baru',
         	'table' => [
         		'total' => 'agensi',
         	],

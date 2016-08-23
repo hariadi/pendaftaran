@@ -212,7 +212,7 @@
 						text: params.term + ' (baru)'
 					};
 				}
-            }).focus(function () { $(this).select2('open'); });;
+            }).focus(function () { $(this).select2('open'); });
         });
     </script>
 @stop

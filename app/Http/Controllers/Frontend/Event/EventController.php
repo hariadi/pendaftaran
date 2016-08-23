@@ -217,7 +217,7 @@ class EventController extends Controller
             if (!empty($userInputAgency)) {
                 $agency = Agency::create([
                     'name' => $userInputAgency,
-                    'short' => str_slug($userInputAgency)
+                    'short' => shorten($userInputAgency)
                 ]);
                 $inputs['agency_id'] = $agency->id;
             } else {

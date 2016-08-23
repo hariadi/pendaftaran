@@ -85,8 +85,8 @@
             	<table class="table table-hover">
                 <tr>
                 	<th>Bil.</th>
-                  <th>Aktiviti</th>
-                  <th>Kehadiran</th>
+                 	<th>Aktiviti</th>
+                 	<th>Kehadiran</th>
                 </tr>
                 @foreach ($participant->events as $i => $event)
                 <?php ++$i; ?>

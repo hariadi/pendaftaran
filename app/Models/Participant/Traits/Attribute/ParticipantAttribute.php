@@ -69,6 +69,11 @@ trait ParticipantAttribute
 			})->count();
 	}
 
+	public function isAttendees($event)
+	{
+	    return $this->events()->where('events.id', $event)->first();
+	}
+
 	/**
      * @return string
      */

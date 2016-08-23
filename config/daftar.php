@@ -7,10 +7,12 @@ return [
 		'Delete',
 		'Edit',
 		'Send',
+		'Store',
 		'Update',
 	],
 
 	'roles' => [
+		'Agency',
 		'Event',
 		'Participant',
 	],

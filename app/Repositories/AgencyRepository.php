@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Models\Agency\Agency;
 
 
-
 class AgencyRepository extends BaseRepository {
 
 	/**
@@ -43,13 +42,29 @@ class AgencyRepository extends BaseRepository {
     	}
 
     	$agency = new $this->model;
-        $agency->parent_id = $inputs['parent_id'];
+
+    	if ($inputs['parent_id']) {
+    		$agency->parent_id = $inputs['parent_id'];
+    	}
+
         $agency->name = $inputs['name'];
-        $agency->short = $inputs['short'];
+
+		$agency->short = empty($inputs['short']) ? shorten($inputs['name']) : $inputs['short'];
 
         $agency->save();
 
         return $agency;
+    }
+
+    public function search($input)
+    {
+    	$builder = $this->model;
+
+		if ($term = $input['term']) {
+            $builder->search($term);
+        }
+
+    	return $builder->orderBy('created_at', 'desc');
     }
 
     public function update($inputs)
@@ -57,9 +72,9 @@ class AgencyRepository extends BaseRepository {
 		return $this->saveAgency($inputs);
     }
 
-    public function find($idOrSlug)
+    public function find($id)
     {
-    	return $this->model->findBySlugOrIdOrFail($idOrSlug);
+    	return $this->model->findOrFail($id);
     }
 
     public function store($inputs)

@@ -65,7 +65,7 @@
             @permission('view-participant')
                 <li class="{{ Active::pattern('participant*') }} treeview">
 
-                    <a href="{!!url('participant')!!}">
+                    <a href="{!!url('admin/participant')!!}">
                     	<i class="fa fa-users"></i>
                     	<span>{{ trans('menus.backend.participant.title') }}</span>
                     	<i class="fa fa-angle-left pull-right"></i>
@@ -74,14 +74,14 @@
                     <ul class="treeview-menu {{ Active::pattern('log-viewer*', 'menu-open') }}" style="display: none; {{ Active::pattern('participant*', 'display: block;') }}">
 
                     	<li class="{{ Active::pattern('participant') }}">
-	                        <a href="{{ route('participant.index') }}">{{ trans('menus.backend.participant.list') }}</a>
+	                        <a href="{{ route('admin.participant.index') }}">{{ trans('menus.backend.participant.list') }}</a>
 	                    </li>
 
-	                    <li class="{{ Active::pattern('participant/create') }}">
+	                    {{-- <li class="{{ Active::pattern('participant/create') }}">
 	                        <a href="{{ route('participant.create') }}">
 		                    	<span>{{ trans('menus.backend.participant.create') }}</span>
 		                    </a>
-	                    </li>
+	                    </li> --}}
 
 	                </ul>
                 </li>

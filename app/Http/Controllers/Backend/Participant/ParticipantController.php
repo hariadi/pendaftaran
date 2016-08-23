@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance\Attendance;
+use App\Repositories\EventRepository;
 use App\Models\Participant\Participant;
 use App\Repositories\ParticipantRepository;
 use App\Models\EventParticipant\EventParticipant;
@@ -15,10 +16,12 @@ use App\Http\Requests\Backend\Participant\AjaxAttendParticipantsRequest;
 class ParticipantController extends Controller
 {
 	protected $participants;
+	protected $events;
 
-	public function __construct(ParticipantRepository $participants)
+	public function __construct(ParticipantRepository $participants, EventRepository $events)
 	{
 		$this->participants = $participants;
+		$this->events = $events;
 	}
 
 	/**
@@ -43,9 +46,16 @@ class ParticipantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Participant $participant)
+    public function edit(Participant $participant, Request $request)
     {
-        return view('backend.participant.edit')->withParticipant($participant);
+
+    	$input = $request->only(['term', 'cat', 'when', 'view', 'by']);
+
+        $events = $this->events->search($input)->paginate();
+
+        return view('backend.participant.edit')
+        	->withParticipant($participant)
+        	->withEvents($events);
     }
 
     /**
@@ -129,5 +139,56 @@ class ParticipantController extends Controller
                 ]);
             }
         }
+    }
+
+    public function ajaxAdd(Request $request)
+	{
+		if (!$request->ajax()) {
+            return;
+        }
+
+        $inputs = $request->only(['event_id', 'participant_id']);
+
+        // Find id for pivot table event_participant
+        $participant = $this->participants->find($inputs['participant_id']);
+        $event = $this->events->find($inputs['event_id']);
+
+        if ($participant->isAttendees($event->id)) {
+        	$participant->events()->detach($event->id);
+
+        	return response()->json([
+	            'result' => true,
+	            'action' => 'delete',
+	            'subject' => 'Telah Dikemaskini!',
+	            'event' => $inputs['event_id'],
+	            'participant' => $inputs['participant_id'],
+	            'status' => 'Pendaftaran telah dihapus',
+	        ]);
+
+        } else {
+        	$participant->events()->attach($event->id);
+
+        	return response()->json([
+	            'result' => true,
+	            'action' => 'add',
+	            'subject' => 'Tambah Program',
+	            'event' => $event->id,
+	            'participant' => $participant->id,
+	            'status' => 'Pendaftaran telah disimpan',
+	        ]);
+        }
+	}
+
+	/**
+     * Delete participant
+     *
+     * @param  App\Event  $participant
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Participant $participant)
+    {
+        $participant->delete();
+
+        return redirect()->route('admin.participant.index')->withFlashSuccess('Peserta berjaya dihapus.');
     }
 }

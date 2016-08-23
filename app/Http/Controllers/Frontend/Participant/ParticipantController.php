@@ -8,6 +8,7 @@ use App\Models\Event\Event;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance\Attendance;
+use App\Repositories\EventRepository;
 use App\Models\Participant\Participant;
 use App\Repositories\ParticipantRepository;
 use App\Models\EventParticipant\EventParticipant;
@@ -15,10 +16,22 @@ use App\Models\EventParticipant\EventParticipant;
 class ParticipantController extends Controller
 {
 	protected $participants;
+	protected $events;
 
-	public function __construct(ParticipantRepository $participants)
+	public function __construct(ParticipantRepository $participants, EventRepository $events)
 	{
 		$this->participants = $participants;
+		$this->events = $events;
+	}
+
+	/**
+     * Show the search results and listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+	{
+		return redirect()->route('admin.participant.index');
 	}
 
 	/**

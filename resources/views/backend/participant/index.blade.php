@@ -3,7 +3,6 @@
 @section('page-header')
     <h1>
         {{ trans('menus.backend.participant.title') }}
-        <a href="{{ route('admin.participant.create') }}" class="btn btn-primary"><i class="fa fa-calendar-plus-o"></i> Tambah Aktiviti</a>
     </h1>
 @endsection
 
@@ -11,11 +10,13 @@
     <div class="box box-success">
         <div class="box-header with-border">
             <h3 class="box-title">Senarai Peserta</h3>
+
             <div class="box-tools pull-right">
                 <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
             </div><!-- /.box tools -->
         </div><!-- /.box-header -->
         <div class="box-body">
+        	<?php $i = 0; ?>
 
         	<div class="table-responsive">
                 <table class="table table-striped table-bordered table-hover">

@@ -77,10 +77,23 @@
 	                        <a href="{{ route('admin.participant.index') }}">{{ trans('menus.backend.participant.list') }}</a>
 	                    </li>
 
-	                    <li class="{{ Active::pattern('admin/participant/create') }}">
-	                        <a href="{{ route('admin.participant.create') }}">
-		                    	<span>{{ trans('menus.backend.participant.create') }}</span>
-		                    </a>
+	                </ul>
+                </li>
+            @endauth
+
+            @permission('view-agencies')
+                <li class="{{ Active::pattern('admin/agencies*') }} treeview">
+
+                    <a href="{!!url('admin/agencies')!!}">
+                    	<i class="fa fa-users"></i>
+                    	<span>{{ trans('menus.backend.agencies.title') }}</span>
+                    	<i class="fa fa-angle-left pull-right"></i>
+                    </a>
+
+                    <ul class="treeview-menu {{ Active::pattern('admin/log-viewer*', 'menu-open') }}" style="display: none; {{ Active::pattern('admin/agencies*', 'display: block;') }}">
+
+                    	<li class="{{ Active::pattern('admin/agencies') }}">
+	                        <a href="{{ route('admin.agencies.index') }}">{{ trans('menus.backend.agencies.list') }}</a>
 	                    </li>
 
 	                </ul>

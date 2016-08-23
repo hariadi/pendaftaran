@@ -4,8 +4,9 @@
 
 @section('page-header')
     <h1>
-        {{ trans('labels.backend.participant.management') }}
-        <small>{{ trans('labels.backend.participant.create') }}</small>
+    	{{ $participant->name }}
+        <small>{{ trans('labels.backend.participant.edit') }}</small>
+        <a href="{{ route('admin.participant.show', $participant->id) }}" class="btn btn-primary btn-sm">Sejarah Kehadiran</a>
     </h1>
 @endsection
 
@@ -117,6 +118,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="box box-success">
             <div class="box-body">
                 <div class="pull-left">
@@ -130,13 +132,65 @@
             </div><!-- /.box-body -->
         </div><!--box-->
 	{!! Form::close() !!}
+
+	<div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Tambah peserta ke dalam program terkini</h3>
+        </div><!-- /.box-header -->
+
+        <div class="box-body">
+			<div class="row">
+				<div class="col-md-12">
+
+					<table class="table table-striped table-bordered table-hover" id="participants">
+                    <thead>
+                    <tr>
+                        <th>{{ trans('labels.backend.event.id') }}</th>
+                        <th>{{ trans('labels.backend.event.title') }}</th>
+                        <th>{{ trans('labels.backend.event.start') }}</th>
+                        <th>{{ trans('labels.backend.event.end') }}</th>
+                        <th>{{ trans('labels.backend.event.participants') }}</th>
+                        <th>{{ trans('labels.backend.event.days') }}</th>
+                        <th>{{ trans('labels.general.actions') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($events as $event)
+                            <tr>
+                                <td>{!! $event->id !!}</td>
+                                <td><a href="{{ route('admin.report.event', $event->id) }}">{!! $event->name !!}</a></td>
+                                <td>{!! $event->start_at->diffForHumans() !!}</td>
+                                <td>{!! $event->end_at->diffForHumans() !!}</td>
+                                <td>
+                                    @if ($event->participants->count() > 0)
+                                    	{!! $event->participants->count() !!}
+                                    @else
+                                        {{ trans('labels.general.none') }}
+                                    @endif
+                                </td>
+                                <td>{!! $event->getTotalDay() !!}</td>
+                                <td>
+                                	<button class="btn {{ $participant->isAttendees($event->id) ? 'btn-success' : 'btn-warning' }} btn-sm btn-attendees btn-block" data-event-id="{{ $event->id }}" data-participant-id="{{  $participant->id }}"><i class="fa fa-{{ $participant->isAttendees($event->id) ? 'check' : 'close' }}"></i></button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+				</div>
+			</div>
+		</div>
+
+	</div>
 @endsection
 
 @section('after-styles-end')
+	{!! Html::style('plugins/toastr/toastr.min.css') !!}
 	{!! Html::style('plugins/datetimepicker/bootstrap-datetimepicker.min.css') !!}
 @stop
 
 @section('after-scripts-end')
+	{!! Html::script('plugins/toastr/toastr.min.js') !!}
     {!! Html::script('plugins/datetimepicker/moment.min.js') !!}
     {!! Html::script('plugins/datetimepicker/bootstrap-datetimepicker.min.js') !!}
 
@@ -148,6 +202,37 @@
 
 			$('.btn-date').click(function() {
 				$(this).parent().parent().find('input').focus();
+			});
+
+			$('#participants').on('click', '.btn-attendees', function(e) {
+				var that = this;
+
+				$.post('{{ route("participant.event.add") }}', {
+					event_id: $(this).data('event-id'),
+					participant_id: $(this).data('participant-id'),
+				}, function(data) {
+
+					if (data.result) {
+						if (data.action == 'add') {
+
+							toastr.success(data.status, data.subject);
+							$(that).toggleClass('btn-warning btn-success');
+							$(that).find('i').toggleClass('fa-check fa-close');
+
+						} else if (data.action == 'delete') {
+
+							toastr.warning(data.status, data.subject);
+							$(that).toggleClass('btn-success btn-warning');
+							$(that).find('i').toggleClass('fa-close fa-check');
+
+						}
+
+					} else {
+						toastr.error(data.status, data.subject);
+					}
+
+				}, 'json');
+
 			});
         });
     </script>
